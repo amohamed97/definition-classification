@@ -5,8 +5,11 @@ import sys
 import fasttext
 import os
 import math
+import time
+import matplotlib.pyplot as plt
 
 
+start_time = time.time()
 # Naive Bayes With Unigrams
 positive_count = 0
 negative_count = 0
@@ -83,9 +86,11 @@ for child in Path("./test/").iterdir():
                         true += 1
                     else:
                         false += 1
-print("NAIVE BAYES (Unigrams) : Accuracy = {:0.2f}% \n".format((true/(true+false))*100))
+print("NAIVE BAYES (Unigrams) : Accuracy = {:0.2f}%".format((true/(true+false))*100))
+print("Learning Time: {:0.2f}s".format(time.time() - start_time))
+print("Vocabulary Size: %d \n" % len(vocab))
 
-
+start_time = time.time()
 # Naive Bayes With Bigrams
 positive_count = 0
 negative_count = 0
@@ -162,16 +167,27 @@ for child in Path("./test/").iterdir():
                         true += 1
                     else:
                         false += 1
-print("NAIVE BAYES (Bigrams) : Accuracy = {:0.2f}% \n".format((true/(true+false))*100))
+print("NAIVE BAYES (Bigrams) : Accuracy = {:0.2f}%".format((true/(true+false))*100))
+print("Learning Time: {:0.2f}s".format(time.time() - start_time))
+print("Vocabulary Size: %d \n" % len(vocab))
 
-
-
-
-# USING fastTEXT
+start_time = time.time()
+# USING fastText
 sys.stdout = open(os.devnull, "w")
-model = fasttext.train_supervised(input="output.train",wordNgrams=2,epoch=5)
+model = fasttext.train_supervised(input="output.train",wordNgrams=2,epoch=8)
 sys.stdout = sys.__stdout__
 percent = model.test("output.test")[1]*100
-# formatted = str(math.ceil((percent*100)/100))
 print("fastText : Accuracy = {:0.2f}%".format(percent))
+print("Learning Time: {:0.2f}s".format((time.time() - start_time)))
+print("Vocabulary Size: %d" % len(model.words))
 
+# epochs = [i for i in range(1,16)]
+# accuracies = []
+# for i in range(1,16):
+#     model = fasttext.train_supervised(input="output.train",wordNgrams=2,epoch=i)
+#     accuracies.append(model.test("output.test")[1]*100)
+
+# plt.plot(epochs, accuracies)
+# plt.ylabel('Accuracy')
+# plt.xlabel('Epoch')
+# plt.show()

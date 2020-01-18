@@ -18,3 +18,18 @@ for child in Path("./output_test/").iterdir():
 with open("output.test","a+") as f:
     for sentence in sentences:
         f.write(sentence)
+
+
+sentences = []
+for child in Path("./output/").iterdir():
+        if child.suffix == '.deft':
+            with open(child) as f:
+                lines = list(f.readlines())
+                for line in lines:
+                    splitted = line.split('"')
+                    text = splitted[1]
+                    has_def = splitted[-2]
+                    sentences.append("__label__"+str(has_def)+" "+text.strip()+"\n")
+with open("output.train","a+") as f:
+    for sentence in sentences:
+        f.write(sentence)
